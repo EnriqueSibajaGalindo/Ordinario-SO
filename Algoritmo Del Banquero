@@ -1,13 +1,136 @@
 /* Ordinario
 Algoritmo del Banquero
 Alumno: Sibaja Galindo Enrique
+Hecho en: Java (El otro link esta en C jejeje)
 */
-#include <iostream>
-using namespace std;
-
-int main(int argc, char *argv[]) 
+public class AlgoritmoDelBanquero 
 {
+
+    private int necesarios[][],
+            selec[][],
+            max[][],
+            disp[][],
+            nProcesos,
+            nuRecursos;
+
+    private void entrada() 
+    {
+        try (Scanner sc = new Scanner(System.in)) 
+	{
+            System.out.print("---------- Algoritmo del Banquero ----------\n");
+	    System.out.print("Sibaja Galindo Enrique\n\n");
+	    
+	    // Solicitamos el numero de Procesos y de Recursos
+	    System.out.print("Ingrese el Numero de Procesos: \n");
+	    // Numero de Procesos
+            nProcesos = sc.nextInt();
+	    System.out.print("Ingrese el Numero de Recursos: \n");
+	    // Numero de Recursos
+            nRecursos = sc.nextInt();
+	    
+	    // Definimos las Matrizes 
+            necesarios = new int[nProcesos][nRecursos];  
+            max = new int[nuProcesos][nRecursos];
+            selec = new int[nProcesos][nRecursos];
+            disp = new int[1][nRecursos];
+	    
+            // Solcitamos datos de "Selecionados"
+            System.out.println("Datos de la Matriz Selecionados: ");
+            for (int i = 0; i < nProcesos; i++) 
+	    {
+                for (int j = 0; j < nRecursos; j++) 
+		{
+                    // Matriz: Selec
+		    selec[i][j] = sc.nextInt(); 
+                }
+            }
+	    
+	    // Solcitamos datos de "Maxima"
+            System.out.println("Datos de la Matriz Maxima: ");
+            for (int i = 0; i < nProcesos; i++) 
+	    {
+                for (int j = 0; j < nRecursos; j++) 
+		{
+	            // Matriz: max	
+                    max[i][j] = sc.nextInt();  
+                }
+            }
+	    
+	    // Solcitamos datos de "Disponibles"
+            System.out.println("Datos de la Matriz Disponibles");
+            for (int j = 0; j < nRecursos; j++) 
+	    {
+	        // Matriz: disp
+                disp[0][j] = sc.nextInt();
+            }
+        }
+    }
+
+    private int[][] cNecesarios() 
+    {
+        for (int i = 0; i < nProcesos; i++) 
+	{
+	    // Se calcula la Matriz "necesarios"
+            for (int j = 0; j < nRecursos; j++)
+            {
+                necesarios[i][j] = max[i][j] - selec[i][j];
+            }
+        }
+        return necesarios;
+    }
+
+    private boolean revisar(int i) 
+    {
+        // Se revisa si TODOS los Recursos pueden ser selecionados para el Proceso
+        for (int j = 0; j < nRecursos; j++) 
+	{
+            if (disp[0][j] < necesarios[i][j]) 
+	    {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void esSeguro() 
+    {
+        entrada();
+        cNecesarios();
+        boolean done[] = new boolean[nProcesos];
+        int j = 0;
 	
+	// Se ejecutara hasta que TODOS los Procesos se asignen
+        while (j < numeroProcesos) 
+	{
+            boolean asignado = false;
+            for (int i = 0; i < nProcesos; i++) 
+	    {
+                // Se verifica para poder Asignar
+		if (!done[i] && revisar(i)) 
+		{
+                    for (int k = 0; k < nRecursos; k++) 
+		    {
+                        disp[0][k] = disp[0][k] - necesarios[i][k] + max[i][k];
+                    }
+                    System.out.println("Proceso Asignado: " + i);
+                    asignado = done[i] = true;
+                    j++;
+                }
+            }
+	    // Si no se asigno...
+            if (!asignado) {
+                break;
+	    // ...se reinicia
+            }
+        }
 	
-	return 0;
+	// Si TODOS los Procesos se Asignaron correctamente...
+        if (j == nProcesos)
+        {
+            System.out.println("\n¡Asignado Correctamente!");
+        } else 
+	{
+            System.out.println("Todos los Procesos se asignaron de forma SEGURA");
+        }
+    }
 }
